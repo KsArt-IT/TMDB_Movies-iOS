@@ -13,7 +13,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        // Регистрация сервисов
+        let networkService = NetworkServiceImpl()
+        let repository = RepositoryImpl(service: networkService)
+
+        ServiceLocator.shared.register(service: networkService as NetworkService)
+        ServiceLocator.shared.register(service: repository as Repository)
+
         return true
     }
 

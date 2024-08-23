@@ -1,7 +1,29 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-
+    "language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "en-US"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ru-RU"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "uk-UA"
+          }
+        }
+      }
+    }
   },
   "version" : "1.0"
 }
