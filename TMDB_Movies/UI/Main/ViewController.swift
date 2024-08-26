@@ -17,6 +17,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         initData()
+        viewModel.updateMovies()
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.viewModel.updateMovies()
         }

@@ -38,15 +38,15 @@ final class MainViewModel: TaskViewModel {
 
             let result = await self.repository?.fetchTopMovies(page: self.page)
             switch result {
-            case .success(let movies):
-                self.page += 1
-                // добавляем порцию фильмов не проверяя
-                self._movies += movies
-//                self.addMovies(movies)
-            case .failure(let error):
-                self._errorMessage = error.localizedDescription
-            case .none:
-                break
+                case .success(let movies):
+                    self.page += 1
+                    // добавляем порцию фильмов не проверяя
+                    self._movies += movies
+                    //                self.addMovies(movies)
+                case .failure(let error):
+                    self._errorMessage = (error as? NetworkServiceError)?.localizedDescription ?? error.localizedDescription
+                case .none:
+                    break
             }
         }
     }

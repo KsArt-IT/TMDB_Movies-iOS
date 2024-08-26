@@ -15,28 +15,39 @@ final class NetworkServiceImpl: NetworkService {
         }
 
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(NetworkServiceError.invalidResponse)
-            }
-
-            guard (200...299).contains(httpResponse.statusCode) else {
-                let errorResponse: ErrorResponse = try decode(data: data)
-                return .failure(NetworkServiceError.statusCode(
-                    code: httpResponse.statusCode,
-                    message: errorResponse.statusMessage
-                ))
-            }
+            let data = try await executeRequest(request)
 
             let result: T = try decode(data: data)
+
             return .success(result)
 
-        } catch let decodingError as DecodingError {
-            return .failure(NetworkServiceError.decodingError(decodingError))
+        } catch let error as NetworkServiceError {
+            return .failure(error)
+        } catch let error as DecodingError {
+            return .failure(NetworkServiceError.decodingError(error))
+        } catch let error as URLError where error.code == .cancelled {
+            return .failure(NetworkServiceError.cancelled)
         } catch {
+            print("NetworkServiceImpl: \(error)")
             return .failure(NetworkServiceError.networkError(error))
         }
+    }
+
+    private func executeRequest(_ request: URLRequest) async throws -> Data {
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkServiceError.invalidResponse
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let errorResponse: ErrorResponse = try decode(data: data)
+            throw NetworkServiceError.statusCode(
+                code: httpResponse.statusCode,
+                message: errorResponse.statusMessage
+            )
+        }
+        return data
     }
 
     private func decode<T: Decodable>(data: Data) throws -> T {

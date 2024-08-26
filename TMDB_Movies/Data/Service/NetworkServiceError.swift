@@ -13,19 +13,22 @@ enum NetworkServiceError: Error {
     case statusCode(code: Int, message: String)
     case decodingError(DecodingError)
     case networkError(Error)
+    case cancelled // отменен запрос
 
     var localizedDescription: String {
         switch self {
-        case .invalidRequest:
-            return "The request is invalid."
-        case .invalidResponse:
-            return "The response is invalid."
-        case .statusCode(let code, let message):
-            return "Unexpected status code: \(code). \(message)"
-        case .decodingError(let error):
-            return "Decoding failed with error: \(error.localizedDescription)."
-        case .networkError(let error):
-            return "Network error occurred: \(error.localizedDescription)."
+            case .invalidRequest:
+                "The request is invalid."
+            case .invalidResponse:
+                "The response is invalid."
+            case .statusCode(let code, let message):
+                "Unexpected status code: \(code). \(message)"
+            case .decodingError(let error):
+                "Decoding failed with error: \(error.localizedDescription)."
+            case .networkError(let error):
+                "Network error occurred: \(error.localizedDescription)."
+            case .cancelled:
+                ""
         }
     }
 }
