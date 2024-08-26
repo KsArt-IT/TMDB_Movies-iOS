@@ -39,7 +39,6 @@ final class MainViewModel: TaskViewModel {
 
     // загрузим порцию фильмов
     func updateMovies() {
-        print("load page=\(page)")
         launch(named: #function) { [weak self] in
             guard let self else { return }
 
@@ -78,7 +77,7 @@ final class MainViewModel: TaskViewModel {
         launch { [weak self] in
             guard let self else { return }
 
-            let result = await self.repository?.fetchMoviePoster(path: path)
+            let result = await self.repository?.fetchMoviePoster(path: path, small: true)
             switch result {
                 case .success(let data):
                     _poster[id] = data

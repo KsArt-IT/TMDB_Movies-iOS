@@ -45,6 +45,13 @@ class MainViewController: UIViewController {
             self.moviesTable.reloadRows(at: [indexPath], with: .fade)
         }
     }
+
+    private func showDetail(_ id: Int) {
+        let storyboard = UIStoryboard(name: "Detail", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "DetailViewController")
+        (vc as? MovieIdDelegate)?.setMovie(by: id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - TableViewDataSource
@@ -81,5 +88,14 @@ extension MainViewController: UITableViewDataSource {
 
 // MARK: - TableViewDelegate
 extension MainViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard indexPath.row < viewModel.movies.wrappedValue.count else { return }
 
+        showDetail(viewModel.movies.wrappedValue[indexPath.row].id)
+    }
+}
+
+protocol MovieIdDelegate {
+    func setMovie(by id: Int)
 }
