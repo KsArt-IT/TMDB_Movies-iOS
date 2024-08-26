@@ -31,6 +31,13 @@ final class RepositoryImpl: Repository {
         }
     }
 
+    func fetchMoviePoster(path: String) async -> Result<Data, any Error> {
+        let result: Result<Data, Error> = await service.loadData(endpoint: .posterSmall(path: path))
+        return switch result {
+            case .success(let data): .success(data)
+            case .failure(let error): .failure(error)
+        }
+    }
 
 }
 

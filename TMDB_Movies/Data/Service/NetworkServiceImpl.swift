@@ -17,6 +17,11 @@ final class NetworkServiceImpl: NetworkService {
         do {
             let data = try await executeRequest(request)
 
+            // если получить Data
+            if T.self == Data.self, let result = data as? T {
+                return .success(result)
+            }
+
             let result: T = try decode(data: data)
 
             return .success(result)

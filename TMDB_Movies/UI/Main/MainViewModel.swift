@@ -16,10 +16,17 @@ final class MainViewModel: TaskViewModel {
         $_movies
     }
 
+    @ObservableLock private var _posterMovie: (IndexPath?) = (nil)
+    var posterMovie: ObservableLock<(IndexPath?)> {
+        $_posterMovie
+    }
+
     @ObservableLock private var _errorMessage: String = ""
     var errorMessage: ObservableLock<String> {
         $_errorMessage
     }
+
+    private var _poster: [Int: Data] = [:]
 
     private let repository: Repository?
 
@@ -60,6 +67,24 @@ final class MainViewModel: TaskViewModel {
         let newMovies = movies.filter { !existingMovies.contains($0.id) }
         if !newMovies.isEmpty {
             _movies += newMovies
+        }
+    }
+
+    func poster(by id: Int) -> Data? {
+        _poster[id]
+    }
+
+    func loadPoster(by id: Int, of path: String, for indexPath: IndexPath) {
+        launch { [weak self] in
+            guard let self else { return }
+
+            let result = await self.repository?.fetchMoviePoster(path: path)
+            switch result {
+                case .success(let data):
+                    _poster[id] = data
+                    _posterMovie = indexPath
+                default: break
+            }
         }
     }
 }

@@ -10,4 +10,5 @@ import Foundation
 protocol Repository: AnyObject {
     func fetchTopMovies(page: Int) async -> Result<[Movie], Error>
     func fetchMovie(id: Int) async -> Result<Movie, Error>
+    func fetchMoviePoster(path: String) async -> Result<Data, Error>
 }
