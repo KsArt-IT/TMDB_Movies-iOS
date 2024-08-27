@@ -22,7 +22,7 @@ extension TmdbEndpoint {
 
         var request = URLRequest(url: url)
         request.httpMethod = method
-        request.timeoutInterval = 10
+        request.timeoutInterval = 30
         request.allHTTPHeaderFields = [
           "accept": "application/json",
         ]
@@ -67,6 +67,10 @@ extension TmdbEndpoint {
         }
     }
 
+}
+
+extension TmdbEndpoint {
+    public static let pageInit = 1
 }
 
 // MARK: - private

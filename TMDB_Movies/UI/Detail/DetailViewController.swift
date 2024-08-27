@@ -23,7 +23,12 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        initView()
         initData()
+    }
+
+    private func initView() {
+        title = R.Strings.titleMovieDetail
     }
 
     private func initData() {
@@ -45,11 +50,12 @@ class DetailViewController: UIViewController {
         dataLabel.text = movie.releaseDate
         genresLabel.text = movie.genres.joined(separator: ", ")
         popularityLabel.text = "\(movie.popularity)"
-        averageLabel.text = "\(movie.voteAverage)"
+        averageLabel.text = "\(movie.voteAverage)/\(movie.voteCount)"
         overviewView.text = movie.overview
     }
 }
 
+// передаем id для загрузки
 extension DetailViewController: MovieIdDelegate {
     func setMovie(by id: Int) {
         viewModel.loadMovie(by: id)

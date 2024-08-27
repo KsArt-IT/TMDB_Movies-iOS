@@ -12,6 +12,7 @@ class MainViewController: UIViewController {
     private let viewModel = MainViewModel()
 
     @IBOutlet weak var moviesTable: UITableView!
+    @IBOutlet weak var loaderView: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,12 +22,27 @@ class MainViewController: UIViewController {
     }
 
     private func initView() {
+        title = R.Strings.titleTopMovies
+        // настроим делегаты
         moviesTable.delegate = self
         moviesTable.dataSource = self
+        // прозрачный фон для таблицы
+        moviesTable.backgroundColor = .clear
+        // стиль разделителя
+        moviesTable.separatorStyle = .singleLine
+        moviesTable.separatorColor = .tableSeparator
     }
 
     // MARK: - binding
     private func initData() {
+        viewModel.loading.observe { [weak self] loading in
+            if loading {
+                self?.loaderView.startAnimating()
+            } else {
+                self?.loaderView.stopAnimating()
+            }
+        }
+
         viewModel.errorMessage.observe { message in
             guard !message.isEmpty else { return }
             
@@ -35,10 +51,11 @@ class MainViewController: UIViewController {
 
         viewModel.movies.observe { [weak self] movies in
             guard let self, !movies.isEmpty else { return }
-
+            print("-----------------reloadData--------------------")
             self.moviesTable.reloadData()
         }
-        viewModel.posterMovie.observe { indexPath in
+        
+        viewModel.posterReload.observe { indexPath in
             guard let indexPath else { return }
 
             // после загрузки постера, обновим ячейку
@@ -57,30 +74,25 @@ class MainViewController: UIViewController {
 // MARK: - TableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.movies.wrappedValue.count
+        viewModel.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.row < viewModel.movies.wrappedValue.count else {
-            fatalError("'MovieCell' row=\(indexPath.row) > count=\(viewModel.movies.wrappedValue.count)")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath)
+        // поставим заглушку
+        cell.imageView?.image = R.Images.poster
+
+        if let movie = viewModel.getMovie(index: indexPath.row) {
+            cell.textLabel?.text = movie.title
+            cell.detailTextLabel?.text = movie.originalTitle
+            // установим постер
+            if let poster = viewModel.getPoster(by: movie.id) {
+                cell.imageView?.image =  UIImage(data: poster)
+            } else {
+                // загрузим постер
+                viewModel.loadPoster(by: movie.id, of: movie.posterPath, for: indexPath)
+            }
         }
-
-        let movie = viewModel.movies.wrappedValue[indexPath.row]
-
-        let cell = moviesTable.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath)
-
-        cell.textLabel?.text = movie.title
-        cell.detailTextLabel?.text = movie.originalTitle
-        // установим постер
-        if let poster = viewModel.poster(by: movie.id) {
-            cell.imageView?.image =  UIImage(data: poster)
-        } else {
-            // поставим заглушку
-            cell.imageView?.image = UIImage(named: "poster")
-            // загрузим постер
-            viewModel.loadPoster(by: movie.id, of: movie.posterPath, for: indexPath)
-        }
-
         return cell
     }
 
@@ -90,9 +102,9 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard indexPath.row < viewModel.movies.wrappedValue.count else { return }
+        guard let movie = viewModel.getMovie(index: indexPath.row)  else { return }
 
-        showDetail(viewModel.movies.wrappedValue[indexPath.row].id)
+        showDetail(movie.id)
     }
 }
 

@@ -41,5 +41,13 @@ final class RepositoryImpl: Repository {
         }
     }
 
+    func fetchTopMoviesCount() async -> Result<(pages: Int, count: Int), any Error> {
+        let result: Result<MovieTopDTOResponse, Error> = await service.loadData(endpoint: .moviesTop(page: TmdbEndpoint.pageInit))
+        return switch result {
+            case .success(let movieTopDTOs): .success((pages: movieTopDTOs.totalPages, count: movieTopDTOs.totalResults))
+            case .failure(let error): .failure(error)
+        }
+    }
+
 }
 
