@@ -12,9 +12,13 @@ final class MainViewModel: TaskViewModel {
     // начать дозагрузку когда до последний элемент раньше на ...
     private let loadWhenLastIndex = 10
     // установим количество страниц и всего элементов при первой загрузке
-    private(set) var numberOfRows = 0
+    private var _numberOfRows = 0
+    var numberOfRows: Int {
+        _movies.count == 0 || page > pageCount ? _movies.count : _numberOfRows
+    }
     private var pageCount = 0
     private var page = 0
+    private var pageLoading = 0
 
     @ObservableLock private var _loading: Bool = false
     var loading: ObservableLock<Bool> {
@@ -33,7 +37,8 @@ final class MainViewModel: TaskViewModel {
     var posterReload: ObservableLock<(IndexPath?)> {
         $_posterReload
     }
-    private var _poster: [Int: Data] = [:]
+    // используется из нескольких потоков одновременно
+    @ObservableLock private var _poster: [Int: Data] = [:]
 
     @ObservableLock private var _errorMessage: String = ""
     var errorMessage: ObservableLock<String> {
@@ -66,14 +71,8 @@ final class MainViewModel: TaskViewModel {
 
     // загрузим порцию фильмов
     private func loadMovies() {
-        guard page <= pageCount else {
-            print("end: page=\(page) = \(pageCount), count=\(numberOfRows) = \(_movies.count)")
-            print("-----------------------------------------")
-            // поставим максимум что есть
-            numberOfRows = _movies.count
-            return
-        }
-
+        guard page <= pageCount else { return }
+        pageLoading = page
         launch(named: #function) { [weak self] in
             guard let self else { return }
 
@@ -83,14 +82,10 @@ final class MainViewModel: TaskViewModel {
             switch result {
                 case .success(let movies):
                     self.page += 1
-                    if self.page > self.pageCount {
-                        self.numberOfRows = self._movies.count + movies.count
-                    }
                     // предзагрузим постер с индексом
-                    let index = self._movies.count
+                    await self.preloadPoster(movies)
                     // добавляем порцию фильмов не проверяя
                     self._movies += movies
-                    self.preloadPoster(index)
                 case .failure(let error):
                     self._errorMessage = (error as? NetworkServiceError)?.localizedDescription ?? error.localizedDescription
                 case .none:
@@ -105,7 +100,6 @@ final class MainViewModel: TaskViewModel {
         paginationLoad(index)
         guard  case 0..<_movies.count = index else { return nil }
 
-        preloadPoster(index + 1)
         let movie = _movies[index]
         print("index=\(index), movie id=\(movie.id) title='\(movie.title)'")
         return movie
@@ -115,13 +109,12 @@ final class MainViewModel: TaskViewModel {
         _poster[id]
     }
 
-    private func preloadPoster(_ index: Int) {
-        guard index < _movies.count else { return }
-        do {
-            let movie = _movies[index]
-//            let poster = try? _poster[movie.id]
-            if try _poster[movie.id] == nil {
-                print("preloadPoster index=\(index)")
+    private func preloadPoster(_ movies: [Movie]) async {
+        guard !movies.isEmpty else { return }
+
+        for movie in movies {
+            if _poster[movie.id] == nil {
+                print("preloadPoster id=\(movie.id)")
                 launch { [weak self] in
                     let result = await self?.repository?.fetchMoviePoster(path: movie.posterPath, small: true)
                     switch result {
@@ -131,8 +124,6 @@ final class MainViewModel: TaskViewModel {
                     }
                 }
             }
-        } catch {
-
         }
     }
 
@@ -155,7 +146,7 @@ final class MainViewModel: TaskViewModel {
             switch result {
                 case let .success((pages, count)):
                     self?.pageCount = pages
-                    self?.numberOfRows = count
+                    self?._numberOfRows = count
                     print("---------------------------")
                     print("pages=\(pages), count=\(count)")
                     print("---------------------------")
@@ -167,8 +158,8 @@ final class MainViewModel: TaskViewModel {
     }
 
     private func paginationLoad(_ index: Int) {
-        // дозагрузка
-        if numberOfRows > _movies.count && index + loadWhenLastIndex >= _movies.count {
+        // дозагрузка только если мы не загружаем эту страницу
+        if page <= pageCount && page != pageLoading && index + loadWhenLastIndex >= _movies.count {
             print("---дозагрузка---")
             loadMovies()
         }
