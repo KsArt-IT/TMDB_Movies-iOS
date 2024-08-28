@@ -43,10 +43,10 @@ class MainViewController: UIViewController {
             }
         }
 
-        viewModel.errorMessage.observe { message in
+        viewModel.errorMessage.observe { [weak self] message in
             guard !message.isEmpty else { return }
             
-            print("Error: \(message)")
+            self?.showAlert(title: "Error", message: message)
         }
 
         viewModel.movies.observe { [weak self] movies in
@@ -69,6 +69,13 @@ class MainViewController: UIViewController {
         (vc as? MovieIdDelegate)?.setMovie(by: id)
         navigationController?.pushViewController(vc, animated: true)
     }
+
+    private func showAlert(title: String = "", message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Ok", style: .default)
+            alert.addAction(okAction)
+            present(alert, animated: true)
+        }
 }
 
 // MARK: - TableViewDataSource
