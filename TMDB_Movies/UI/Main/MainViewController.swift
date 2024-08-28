@@ -13,7 +13,8 @@ class MainViewController: UIViewController {
 
     @IBOutlet weak var moviesTable: UITableView!
     @IBOutlet weak var loaderView: UIActivityIndicatorView!
-
+    @IBOutlet weak var pregressView: UIProgressView!
+    @IBOutlet weak var reloadButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -23,6 +24,9 @@ class MainViewController: UIViewController {
 
     private func initView() {
         title = R.Strings.titleTopMovies
+        reloadButton.titleLabel?.text = R.Strings.titleReloadButton
+        reloadButton.isHidden = true
+        pregressView.progress = 0
         // настроим делегаты
         moviesTable.delegate = self
         moviesTable.dataSource = self
@@ -45,13 +49,15 @@ class MainViewController: UIViewController {
 
         viewModel.errorMessage.observe { [weak self] message in
             guard !message.isEmpty else { return }
-            
+
+            self?.reloadButton.isHidden = false
             self?.showAlert(title: "Error", message: message)
         }
 
         viewModel.movies.observe { [weak self] movies in
             guard let self, !movies.isEmpty else { return }
-            print("-----------------reloadData--------------------")
+            pregressView.progress = viewModel.pregress
+            print("-----------------reloadData--------------------\(pregressView.progress)")
             self.moviesTable.reloadData()
         }
         
@@ -61,6 +67,11 @@ class MainViewController: UIViewController {
             // после загрузки постера, обновим ячейку
             self.moviesTable.reloadRows(at: [indexPath], with: .fade)
         }
+    }
+
+    @IBAction func reloadData(_ sender: UIButton) {
+        sender.isHidden = true
+        viewModel.reloadPage()
     }
 
     private func showDetail(_ id: Int) {

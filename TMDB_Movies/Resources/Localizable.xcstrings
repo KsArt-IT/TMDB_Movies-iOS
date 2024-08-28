@@ -47,6 +47,23 @@
         }
       }
     },
+    "Reload" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезагрузить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезавантажити"
+          }
+        }
+      }
+    },
     "titleTopMovies" : {
       "extractionState" : "manual",
       "localizations" : {

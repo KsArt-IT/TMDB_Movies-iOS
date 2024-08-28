@@ -22,7 +22,7 @@
                                 <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xf1-eh-TAn">
-                                <rect key="frame" x="10" y="103" width="373" height="715"/>
+                                <rect key="frame" x="10" y="103" width="373" height="711"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" name="AccentColor"/>
@@ -65,27 +65,47 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="5W9-to-6Sk">
+                                <rect key="frame" x="10" y="814" width="373" height="4"/>
+                                <color key="tintColor" name="TableSeparatorColor"/>
+                            </progressView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F4F-P0-P5y">
+                                <rect key="frame" x="10" y="779" width="373" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Reload"/>
+                                <connections>
+                                    <action selector="reloadData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EXK-eC-xpF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="BackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="xf1-eh-TAn" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GVz-lF-OPn"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="xf1-eh-TAn" secondAttribute="bottom" id="aon-BI-edP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xf1-eh-TAn" secondAttribute="trailing" constant="10" id="2l7-wx-Zy8"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="5W9-to-6Sk" secondAttribute="trailing" constant="10" id="Dew-eM-S8L"/>
+                            <constraint firstItem="5W9-to-6Sk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="HQn-tz-Vo9"/>
+                            <constraint firstItem="5W9-to-6Sk" firstAttribute="top" secondItem="F4F-P0-P5y" secondAttribute="bottom" id="TJt-Et-Q3a"/>
+                            <constraint firstItem="xf1-eh-TAn" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="TPK-0F-sl5"/>
+                            <constraint firstItem="F4F-P0-P5y" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="YCQ-Ii-bIm"/>
                             <constraint firstItem="U2Y-33-5kv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="by3-ka-jwG"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xf1-eh-TAn" secondAttribute="trailing" constant="10" id="cnr-LN-Uod"/>
+                            <constraint firstItem="5W9-to-6Sk" firstAttribute="top" secondItem="xf1-eh-TAn" secondAttribute="bottom" id="d5Y-f7-N6y"/>
+                            <constraint firstItem="xf1-eh-TAn" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="nT2-cQ-uEW"/>
+                            <constraint firstAttribute="trailing" secondItem="F4F-P0-P5y" secondAttribute="trailing" constant="10" id="rnP-Pz-HZX"/>
                             <constraint firstItem="U2Y-33-5kv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="sPY-36-EL5"/>
-                            <constraint firstItem="xf1-eh-TAn" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="wUb-GO-2oR"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="5W9-to-6Sk" secondAttribute="bottom" id="ygS-E1-yfj"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="l4b-Jh-48j"/>
                     <connections>
                         <outlet property="loaderView" destination="U2Y-33-5kv" id="BHA-5h-wfe"/>
                         <outlet property="moviesTable" destination="xf1-eh-TAn" id="WZH-fO-Mie"/>
+                        <outlet property="pregressView" destination="5W9-to-6Sk" id="YKB-fr-ITS"/>
+                        <outlet property="reloadButton" destination="F4F-P0-P5y" id="03E-iv-uaQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1057.2519083969464" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="1052.6717557251909" y="-27.464788732394368"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="nvV-C9-tUv">

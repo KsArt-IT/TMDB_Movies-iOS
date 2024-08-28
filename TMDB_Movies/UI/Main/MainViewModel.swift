@@ -45,6 +45,10 @@ final class MainViewModel: TaskViewModel {
         $_errorMessage
     }
 
+    var pregress: Float {
+        count == numberOfRows || numberOfRows == 0 ? 1.0 : Float(count) / Float(numberOfRows) + 0.01
+    }
+
     private let repository: Repository?
 
     init(repository: Repository? = ServiceLocator.shared.resolve()) {
@@ -67,6 +71,10 @@ final class MainViewModel: TaskViewModel {
                 self?._loading = false
             }
         }
+    }
+
+    func reloadPage() {
+        loadMovies()
     }
 
     // загрузим порцию фильмов

@@ -11,6 +11,7 @@ enum R {
 
     enum Strings {
         static let language = String(localized: "language")
+        static let titleReloadButton = String(localized: "Reload")
         static let titleTopMovies = String(localized: "titleTopMovies")
         static let titleMovieDetail = String(localized: "movieInfo")
     }
