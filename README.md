@@ -8,7 +8,9 @@ Top rated movies and detailed information about films
 
 ## Architecture
 
+- [MVVM-C](https://medium.com/nerd-for-tech/mvvm-coordinators-ios-architecture-tutorial-fb27eaa36470)
 - [MVVM](https://ru.wikipedia.org/wiki/Model-View-ViewModel)
+- [Coordinator](https://www.kodeco.com/books/design-patterns-by-tutorials/v3.0/chapters/23-coordinator-pattern)
 - [Repository](https://uk.wikipedia.org/wiki/Repository)
 
 ## Technologies
