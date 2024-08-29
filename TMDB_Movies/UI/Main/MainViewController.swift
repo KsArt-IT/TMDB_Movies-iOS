@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, ViewControllerCreator {
 
     var viewModel: MainViewModel!
     weak var coordinator: MoviesCoordinator?
@@ -86,6 +86,10 @@ class MainViewController: UIViewController {
             alert.addAction(okAction)
             present(alert, animated: true)
         }
+
+    deinit {
+        print("MainViewController.deinit")
+    }
 }
 
 // MARK: - TableViewDataSource

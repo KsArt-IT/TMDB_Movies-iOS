@@ -12,7 +12,7 @@ final class MoviesCoordinator: Coordinator {
     weak var parentCoordinator: Coordinator?
 
     var navController: UINavigationController
-    
+
     var childCoordinators: [Coordinator] = []
 
     private var repository: Repository?
@@ -28,32 +28,22 @@ final class MoviesCoordinator: Coordinator {
     }
 
     private func initRepository() {
-        // Регистрация сервисов
         let networkService = NetworkServiceImpl()
         repository = RepositoryImpl(service: networkService)
     }
 
     private func showMain() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let vc = storyboard.instantiateViewController(
-            identifier: String(describing: MainViewController.self)
-        ) as? MainViewController {
-            vc.coordinator = self
-            vc.viewModel = MainViewModel(repository: repository)
-            navController.pushViewController(vc, animated: true)
-        }
+        let vc = MainViewController.create(of: "Main")
+        vc.coordinator = self
+        vc.viewModel = MainViewModel(repository: repository)
+        navController.pushViewController(vc, animated: true)
     }
 
     func showDetail(id: Int) {
-        let storyboard = UIStoryboard(name: "Detail", bundle: nil)
-        if let vc = storyboard.instantiateViewController(
-            identifier: String(describing: DetailViewController.self)
-        ) as? DetailViewController {
-            let viewModel = DetailViewModel(repository: repository)
-            viewModel.loadMovie(by: id)
-            vc.viewModel = viewModel
-            navController.pushViewController(vc, animated: true)
-        }
+        let vc = DetailViewController.create(of: "Detail")
+        vc.viewModel = DetailViewModel(repository: repository)
+        vc.viewModel.loadMovie(by: id)
+        navController.pushViewController(vc, animated: true)
     }
 
     func childDidFinish(_ child: any Coordinator) {
@@ -61,11 +51,13 @@ final class MoviesCoordinator: Coordinator {
     }
 
     func finish() {
-        for coordinator in childCoordinators {
-            coordinator.finish()
-        }
-        parentCoordinator?.childDidFinish(self)
+        navController.viewControllers.removeAll()
         repository = nil
+        parentCoordinator?.childDidFinish(self)
+    }
+
+    deinit {
+        print("MoviesCoordinator.deinit")
     }
 
 }

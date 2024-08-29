@@ -30,6 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Вызывается, когда сцена отключается. Можно освободить ресурсы.
         print("SceneDelegate.deinit")
         appCoordinator?.finish()
+        appCoordinator = nil
     }
 
 }

@@ -40,7 +40,6 @@ final class AppCoordinator: Coordinator {
     }
 
     func finish() {
-        print("AppCoordinator.deinit")
         for coordinator in childCoordinators {
             coordinator.finish()
         }

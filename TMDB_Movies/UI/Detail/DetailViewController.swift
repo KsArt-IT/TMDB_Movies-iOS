@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, ViewControllerCreator {
 
     var viewModel: DetailViewModel!
 
@@ -52,5 +52,9 @@ class DetailViewController: UIViewController {
         popularityLabel.text = "\(movie.popularity)"
         averageLabel.text = "\(movie.voteAverage)/\(movie.voteCount)"
         overviewView.text = movie.overview
+    }
+
+    deinit {
+        print("DetailViewController.deinit")
     }
 }
