@@ -21,7 +21,7 @@ final class DetailViewModel: TaskViewModel {
 
     private let repository: Repository?
 
-    init(repository: Repository? = ServiceLocator.shared.resolve()) {
+    init(repository: Repository?) {
         self.repository = repository
         super.init()
     }

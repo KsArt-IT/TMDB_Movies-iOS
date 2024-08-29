@@ -15,7 +15,7 @@ final class MoviesCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
 
-    private let repository: Repository? = ServiceLocator.shared.resolve()
+    private var repository: Repository?
 
     init(parentCoordinator: Coordinator, navController: UINavigationController) {
         self.parentCoordinator = parentCoordinator
@@ -23,6 +23,17 @@ final class MoviesCoordinator: Coordinator {
     }
     
     func start() {
+        initRepository()
+        showMain()
+    }
+
+    private func initRepository() {
+        // Регистрация сервисов
+        let networkService = NetworkServiceImpl()
+        repository = RepositoryImpl(service: networkService)
+    }
+
+    private func showMain() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let vc = storyboard.instantiateViewController(
             identifier: String(describing: MainViewController.self)
@@ -54,7 +65,7 @@ final class MoviesCoordinator: Coordinator {
             coordinator.finish()
         }
         parentCoordinator?.childDidFinish(self)
+        repository = nil
     }
-    
 
 }
