@@ -9,12 +9,14 @@ import UIKit
 
 class MainViewController: UIViewController {
 
-    private let viewModel = MainViewModel()
+    var viewModel: MainViewModel!
+    weak var coordinator: MoviesCoordinator?
 
     @IBOutlet weak var moviesTable: UITableView!
     @IBOutlet weak var loaderView: UIActivityIndicatorView!
     @IBOutlet weak var pregressView: UIProgressView!
     @IBOutlet weak var reloadButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -75,10 +77,7 @@ class MainViewController: UIViewController {
     }
 
     private func showDetail(_ id: Int) {
-        let storyboard = UIStoryboard(name: "Detail", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "DetailViewController")
-        (vc as? MovieIdDelegate)?.setMovie(by: id)
-        navigationController?.pushViewController(vc, animated: true)
+        coordinator?.showDetail(id: id)
     }
 
     private func showAlert(title: String = "", message: String) {
@@ -124,8 +123,4 @@ extension MainViewController: UITableViewDelegate {
 
         showDetail(movie.id)
     }
-}
-
-protocol MovieIdDelegate {
-    func setMovie(by id: Int)
 }

@@ -28,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Вызывается, когда сцена отключается. Можно освободить ресурсы.
+        print("SceneDelegate.deinit")
         appCoordinator?.finish()
     }
 

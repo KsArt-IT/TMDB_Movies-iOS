@@ -9,7 +9,7 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    private let viewModel: DetailViewModel = DetailViewModel()
+    var viewModel: DetailViewModel!
 
     @IBOutlet weak var posterView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -52,12 +52,5 @@ class DetailViewController: UIViewController {
         popularityLabel.text = "\(movie.popularity)"
         averageLabel.text = "\(movie.voteAverage)/\(movie.voteCount)"
         overviewView.text = movie.overview
-    }
-}
-
-// передаем id для загрузки
-extension DetailViewController: MovieIdDelegate {
-    func setMovie(by id: Int) {
-        viewModel.loadMovie(by: id)
     }
 }

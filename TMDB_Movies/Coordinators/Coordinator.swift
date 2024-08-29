@@ -9,8 +9,11 @@ import UIKit
 
 protocol Coordinator: AnyObject {
     var navController: UINavigationController { get set }
+    var parentCoordinator: Coordinator? { get }
     var childCoordinators: [Coordinator] { get set }
     
     func start()
     func finish()
+    func childDidFinish(_ child: Coordinator)
 }
+
