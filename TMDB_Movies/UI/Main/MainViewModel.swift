@@ -14,10 +14,7 @@ final class MainViewModel: TaskViewModel {
     // начать дозагрузку когда до последний элемент раньше на ...
     private let loadWhenLastIndex = 10
     // установим количество страниц и всего элементов при первой загрузке
-    private var _numberOfRows = 0
-    var numberOfRows: Int {
-        _movies.count == 0 || page > pageCount ? _movies.count : _numberOfRows
-    }
+    private var numberOfRows = 0
     private var pageCount = 0
     private var page = 0
     private var pageLoading = 0
@@ -47,7 +44,7 @@ final class MainViewModel: TaskViewModel {
         $_errorMessage
     }
 
-    var pregress: Float {
+    var progress: Float {
         count == numberOfRows || numberOfRows == 0 ? 1.0 : Float(count) / Float(numberOfRows) + 0.01
     }
 
@@ -77,7 +74,7 @@ final class MainViewModel: TaskViewModel {
     }
 
     func reloadPage() {
-        loadMovies()
+        loadPagination()
     }
 
     // загрузим порцию фильмов
@@ -103,16 +100,17 @@ final class MainViewModel: TaskViewModel {
                     break
             }
             self._loading = false
+            pageLoading = -1
         }
     }
 
     func getMovie(index: Int) -> Movie? {
         // дозагрузим по необходимости
-        paginationLoad(index)
+        loadPagination(index)
         guard  case 0..<_movies.count = index else { return nil }
 
         let movie = _movies[index]
-        print("index=\(index), movie id=\(movie.id) title='\(movie.title)'")
+//        print("index=\(index), movie id=\(movie.id) title='\(movie.title)'")
         return movie
     }
 
@@ -125,7 +123,7 @@ final class MainViewModel: TaskViewModel {
 
         for movie in movies {
             if _poster[movie.id] == nil {
-                print("preloadPoster id=\(movie.id)")
+//                print("preloadPoster id=\(movie.id)")
                 launch { [weak self] in
                     let result = await self?.repository?.fetchMoviePoster(path: movie.posterPath, small: true)
                     switch result {
@@ -161,7 +159,7 @@ final class MainViewModel: TaskViewModel {
             switch result {
                 case let .success((pages, count)):
                     self?.pageCount = pages
-                    self?._numberOfRows = count
+                    self?.numberOfRows = count
                     print("---------------------------")
                     print("pages=\(pages), count=\(count)")
                     print("---------------------------")
@@ -172,11 +170,12 @@ final class MainViewModel: TaskViewModel {
         }
     }
 
-    private func paginationLoad(_ index: Int) {
+    func loadPagination(_ index: Int = -1) {
         // дозагрузка только если мы не загружаем эту страницу
-        if page <= pageCount && page != pageLoading && index + loadWhenLastIndex >= _movies.count {
+        if page <= pageCount && page != pageLoading && (index < 0 || index + loadWhenLastIndex >= _movies.count) {
             print("---дозагрузка---")
             loadMovies()
         }
     }
+
 }

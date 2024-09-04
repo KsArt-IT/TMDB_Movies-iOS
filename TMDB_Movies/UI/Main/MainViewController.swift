@@ -45,11 +45,7 @@ class MainViewController: UIViewController, ViewControllerCreator {
     // MARK: - binding
     private func initData() {
         viewModel.loading.observe { [weak self] loading in
-            if loading {
-                self?.loaderView.startAnimating()
-            } else {
-                self?.loaderView.stopAnimating()
-            }
+            self?.showTableFooterLoader(loading)
         }
 
         viewModel.errorMessage.observe { [weak self] message in
@@ -61,8 +57,8 @@ class MainViewController: UIViewController, ViewControllerCreator {
 
         viewModel.movies.observe { [weak self] movies in
             guard let self, !movies.isEmpty else { return }
-            pregressView.progress = viewModel.pregress
-            print("-----------------reloadData--------------------\(pregressView.progress)")
+            pregressView.progress = viewModel.progress
+//            print("-----------------reloadData--------------------\(pregressView.progress)")
             self.moviesTable.reloadData()
         }
         
@@ -77,6 +73,19 @@ class MainViewController: UIViewController, ViewControllerCreator {
     @IBAction func reloadData(_ sender: UIButton) {
         sender.isHidden = true
         viewModel.reloadPage()
+    }
+
+    private func showTableFooterLoader(_ show: Bool = true) {
+        moviesTable.tableFooterView = show ? createTableFooter() : nil
+    }
+
+    private func createTableFooter() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: moviesTable.contentSize.width, height: 100))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        return footerView
     }
 
     private func showDetail(_ id: Int) {
@@ -98,7 +107,7 @@ class MainViewController: UIViewController, ViewControllerCreator {
 // MARK: - TableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.numberOfRows
+        viewModel.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -129,5 +138,15 @@ extension MainViewController: UITableViewDelegate {
         guard let movie = viewModel.getMovie(index: indexPath.row)  else { return }
 
         showDetail(movie.id)
+    }
+}
+
+// MARK: - ScrollViewDelegate
+extension MainViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offset = moviesTable.contentSize.height - (scrollView.frame.size.height + scrollView.contentOffset.y)
+        if offset < 100 {
+            viewModel.loadPagination()
+        }
     }
 }
