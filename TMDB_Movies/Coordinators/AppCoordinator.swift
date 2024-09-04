@@ -9,8 +9,8 @@ import UIKit
 
 final class AppCoordinator: Coordinator {
 
-    var navController: UINavigationController
-    
+    private let navController: UINavigationController
+
     weak var parentCoordinator: Coordinator? = nil
 
     var childCoordinators: [Coordinator] = []
@@ -19,24 +19,17 @@ final class AppCoordinator: Coordinator {
         self.navController = navController
     }
 
-    func start() {
-        startMoviesFlow()
+    func navigation(to route: Route) {
+        switch route {
+            case .start: startMoviesFlow()
+            default: break
+        }
     }
 
     private func startMoviesFlow() {
-        let coordinator = MoviesCoordinator(parentCoordinator: self, navController: navController)
-        childCoordinators.append(coordinator)
-        coordinator.start()
-    }
-
-    // MARK: - deinitialize
-    func childDidFinish(_ child: any Coordinator) {
-        for (index, coordinator) in childCoordinators.enumerated() {
-            if coordinator === child {
-                childCoordinators.remove(at: index)
-                break
-            }
-        }
+        let coordinator = MoviesCoordinator(parent: self, navController: navController)
+        add(child: coordinator)
+        coordinator.navigation(to: .start)
     }
 
     func finish() {

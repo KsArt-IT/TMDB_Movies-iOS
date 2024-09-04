@@ -77,7 +77,7 @@ class MainViewController: UIViewController, ViewControllerCreator {
     }
 
     private func showDetail(_ id: Int) {
-        coordinator?.showDetail(id: id)
+        coordinator?.navigation(to: .detail(id: id))
     }
 
     private func showAlert(title: String = "", message: String) {

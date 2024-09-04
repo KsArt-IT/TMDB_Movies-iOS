@@ -9,22 +9,27 @@ import UIKit
 
 final class MoviesCoordinator: Coordinator {
 
-    weak var parentCoordinator: Coordinator?
+    private let navController: UINavigationController
 
-    var navController: UINavigationController
+    weak var parentCoordinator: Coordinator?
 
     var childCoordinators: [Coordinator] = []
 
     private var repository: Repository?
 
-    init(parentCoordinator: Coordinator, navController: UINavigationController) {
-        self.parentCoordinator = parentCoordinator
+    init(parent coordinator: Coordinator, navController: UINavigationController) {
+        self.parentCoordinator = coordinator
         self.navController = navController
-    }
-    
-    func start() {
+
         initRepository()
-        showMain()
+    }
+
+    func navigation(to route: Route) {
+        switch route {
+            case .start: showMain()
+            case .detail(let id): showDetail(id: id)
+            default: break
+        }
     }
 
     private func initRepository() {
@@ -39,21 +44,17 @@ final class MoviesCoordinator: Coordinator {
         navController.pushViewController(vc, animated: true)
     }
 
-    func showDetail(id: Int) {
+    private func showDetail(id: Int) {
         let vc = DetailViewController.create(of: "Detail")
         vc.viewModel = DetailViewModel(repository: repository)
         vc.viewModel.loadMovie(by: id)
         navController.pushViewController(vc, animated: true)
     }
 
-    func childDidFinish(_ child: any Coordinator) {
-
-    }
-
     func finish() {
         navController.viewControllers.removeAll()
         repository = nil
-        parentCoordinator?.childDidFinish(self)
+        onFinished(child: self)
     }
 
     deinit {
