@@ -9,7 +9,7 @@ import UIKit
 
 class DetailViewController: UIViewController, ViewControllerCreator {
 
-    var viewModel: DetailViewModel!
+    private var viewModel: DetailViewModel!
 
     @IBOutlet weak var posterView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -25,6 +25,10 @@ class DetailViewController: UIViewController, ViewControllerCreator {
 
         initView()
         initData()
+    }
+
+    func setViewModel(_ viewModel: DetailViewModel) {
+        self.viewModel = viewModel
     }
 
     private func initView() {

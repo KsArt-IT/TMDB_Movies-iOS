@@ -21,12 +21,14 @@ final class DetailViewModel: TaskViewModel {
 
     private let repository: Repository?
 
-    init(repository: Repository?) {
+    init(repository: Repository?, id: Int) {
         self.repository = repository
         super.init()
+
+        loadMovie(by: id)
     }
 
-    func loadMovie(by id: Int) {
+    private func loadMovie(by id: Int) {
         launch(named: #function) { [weak self] in
             let result = await self?.repository?.fetchMovie(id: id)
             switch result {

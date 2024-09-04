@@ -10,6 +10,7 @@ import UIKit
 final class MoviesCoordinator: Coordinator {
 
     private let navController: UINavigationController
+    private let component: RootComponent
 
     weak var parentCoordinator: Coordinator?
 
@@ -17,9 +18,10 @@ final class MoviesCoordinator: Coordinator {
 
     private var repository: Repository?
 
-    init(parent coordinator: Coordinator, navController: UINavigationController) {
+    init(parent coordinator: Coordinator, navController: UINavigationController, component: RootComponent) {
         self.parentCoordinator = coordinator
         self.navController = navController
+        self.component = component
 
         initRepository()
     }
@@ -38,15 +40,12 @@ final class MoviesCoordinator: Coordinator {
     }
 
     private func showMain() {
-        let vc = MainViewController.create(of: "Main")
-        vc.setViewModel(MainViewModel(coordinator: self, repository: repository))
+        let vc = component.mainComponent.viewController(coordinator: self)
         navController.pushViewController(vc, animated: true)
     }
 
     private func showDetail(id: Int) {
-        let vc = DetailViewController.create(of: "Detail")
-        vc.viewModel = DetailViewModel(repository: repository)
-        vc.viewModel.loadMovie(by: id)
+        let vc = component.detailComponent.viewController(by: id)
         navController.pushViewController(vc, animated: true)
     }
 
