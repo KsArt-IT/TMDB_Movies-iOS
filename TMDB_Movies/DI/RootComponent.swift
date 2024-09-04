@@ -8,8 +8,16 @@
 import Foundation
 import NeedleFoundation
 
-// needle generate TMDB_Movies/DI/NeedleGenerated.swift TMDB_Movies/  
+// needle generate TMDB_Movies/DI/NeedleGenerated.swift TMDB_Movies/
 class RootComponent: BootstrapComponent {
+
+    private var networkService: NetworkService {
+        shared { NetworkServiceImpl() }
+    }
+
+    public var repository: Repository {
+        shared { RepositoryImpl(service: networkService) }
+    }
 
     var mainComponent: MainComponent {
         MainComponent(parent: self)
@@ -17,5 +25,9 @@ class RootComponent: BootstrapComponent {
 
     var detailComponent: DetailComponent {
         DetailComponent(parent: self)
+    }
+
+    var repositoryComponent: RepositoryComponent {
+        RepositoryComponent(parent: self)
     }
 }

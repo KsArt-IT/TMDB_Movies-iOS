@@ -31,3 +31,7 @@ xcuserdata
 **/fastlane/screenshots
 **/fastlane/test_output
 
+# DI: Needle
+./NeedleGenerated.swift
+./TMDB_Movies/DI/NeedleGenerated.swift
+TMDB_Movies/DI/NeedleGenerated.swift

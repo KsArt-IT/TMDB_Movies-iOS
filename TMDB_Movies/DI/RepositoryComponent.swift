@@ -13,7 +13,7 @@ class RepositoryComponent: Component<RepositoryDependency> {
         shared { NetworkServiceImpl() }
     }
 
-    var repository: Repository {
+    public var repository: Repository {
         shared { RepositoryImpl(service: networkService) }
     }
 }

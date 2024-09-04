@@ -9,6 +9,5 @@ import Foundation
 import NeedleFoundation
 
 protocol RepositoryDependency: Dependency {
-    var networkService: NetworkService { get }
     var repository: Repository { get }
 }
