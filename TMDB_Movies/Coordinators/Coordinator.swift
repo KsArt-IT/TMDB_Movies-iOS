@@ -20,7 +20,7 @@ extension Coordinator {
         childCoordinators.append(coordinator)
     }
 
-    private func remove(child coordinator: Coordinator) {
+    func remove(child coordinator: Coordinator) {
         for (index, child) in childCoordinators.enumerated() {
             if child === coordinator {
                 childCoordinators.remove(at: index)
@@ -30,8 +30,8 @@ extension Coordinator {
     }
 
     // сообщить родителю что закончил
-    func onFinished(child coordinator: Coordinator) {
-        parentCoordinator?.remove(child: coordinator)
+    func onFinished() {
+        parentCoordinator?.remove(child: self)
     }
 }
 

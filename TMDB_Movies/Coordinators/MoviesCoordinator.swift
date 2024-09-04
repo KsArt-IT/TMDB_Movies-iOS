@@ -53,7 +53,7 @@ final class MoviesCoordinator: Coordinator {
     func finish() {
         navController.viewControllers.removeAll()
         repository = nil
-        onFinished(child: self)
+        onFinished()
     }
 
     deinit {
