@@ -39,8 +39,7 @@ final class MoviesCoordinator: Coordinator {
 
     private func showMain() {
         let vc = MainViewController.create(of: "Main")
-        vc.coordinator = self
-        vc.viewModel = MainViewModel(repository: repository)
+        vc.setViewModel(MainViewModel(coordinator: self, repository: repository))
         navController.pushViewController(vc, animated: true)
     }
 

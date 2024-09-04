@@ -9,8 +9,7 @@ import UIKit
 
 class MainViewController: UIViewController, ViewControllerCreator {
 
-    var viewModel: MainViewModel!
-    weak var coordinator: MoviesCoordinator?
+    private var viewModel: MainViewModel!
 
     @IBOutlet weak var moviesTable: UITableView!
     @IBOutlet weak var loaderView: UIActivityIndicatorView!
@@ -22,6 +21,10 @@ class MainViewController: UIViewController, ViewControllerCreator {
 
         initView()
         initData()
+    }
+
+    func setViewModel(_ viewModel: MainViewModel) {
+        self.viewModel = viewModel
     }
 
     private func initView() {
@@ -77,7 +80,7 @@ class MainViewController: UIViewController, ViewControllerCreator {
     }
 
     private func showDetail(_ id: Int) {
-        coordinator?.navigation(to: .detail(id: id))
+        viewModel.showDetail(id)
     }
 
     private func showAlert(title: String = "", message: String) {

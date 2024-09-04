@@ -9,6 +9,8 @@ import Foundation
 
 final class MainViewModel: TaskViewModel {
 
+    private weak var coordinator: Coordinator?
+
     // начать дозагрузку когда до последний элемент раньше на ...
     private let loadWhenLastIndex = 10
     // установим количество страниц и всего элементов при первой загрузке
@@ -51,7 +53,8 @@ final class MainViewModel: TaskViewModel {
 
     private let repository: Repository?
 
-    init(repository: Repository?) {
+    init(coordinator: Coordinator, repository: Repository?) {
+        self.coordinator = coordinator
         self.repository = repository
         super.init()
 
@@ -145,6 +148,10 @@ final class MainViewModel: TaskViewModel {
                 default: break
             }
         }
+    }
+
+    func showDetail(_ id: Int) {
+        coordinator?.navigation(to: .detail(id: id))
     }
 
     // MARK: - Pagination
