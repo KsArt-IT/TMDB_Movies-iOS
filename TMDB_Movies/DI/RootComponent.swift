@@ -26,8 +26,4 @@ class RootComponent: BootstrapComponent {
     var detailComponent: DetailComponent {
         DetailComponent(parent: self)
     }
-
-    var repositoryComponent: RepositoryComponent {
-        RepositoryComponent(parent: self)
-    }
 }
