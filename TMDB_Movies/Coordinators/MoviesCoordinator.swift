@@ -16,14 +16,10 @@ final class MoviesCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator] = []
 
-    private var repository: Repository?
-
     init(parent coordinator: Coordinator, navController: UINavigationController, component: RootComponent) {
         self.parentCoordinator = coordinator
         self.navController = navController
         self.component = component
-
-        initRepository()
     }
 
     func navigation(to route: Route) {
@@ -32,11 +28,6 @@ final class MoviesCoordinator: Coordinator {
             case .detail(let id): showDetail(id: id)
             default: break
         }
-    }
-
-    private func initRepository() {
-        let networkService = NetworkServiceImpl()
-        repository = RepositoryImpl(service: networkService)
     }
 
     private func showMain() {
@@ -51,7 +42,6 @@ final class MoviesCoordinator: Coordinator {
 
     func finish() {
         navController.viewControllers.removeAll()
-        repository = nil
         onFinished()
     }
 
